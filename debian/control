@@ -1,0 +1,11 @@
+Source: rhythmbox-plugin-tray-icon
+Section: universe/gnome
+Priority: optional
+Maintainer: Linux Mint <root@linuxmint.com>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.5
+
+Package: rhythmbox-plugin-tray-icon
+Architecture: all
+Description: A tray icon plugin for rhythmbox music player
+ A tray icon plugin for rhythmbox music player.
