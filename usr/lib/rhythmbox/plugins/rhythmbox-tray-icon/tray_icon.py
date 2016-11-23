@@ -41,10 +41,18 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 
         self.menu = Gtk.Menu()
 
-        menuitem_playpause = Gtk.MenuItem(_("Play/Pause"))
-        menuitem_next = Gtk.MenuItem(_("Next"))
-        menuitem_prev = Gtk.MenuItem(_("Previous"))
-        menuitem_quit = Gtk.MenuItem(_("Close"))
+        if self.playing:
+            menuitem_playpause = Gtk.ImageMenuItem(_("Pause"))
+            menuitem_playpause.set_image(Gtk.Image.new_from_icon_name("media-playback-pause-symbolic", Gtk.IconSize.MENU))
+        else:
+            menuitem_playpause = Gtk.ImageMenuItem(_("Play"))
+            menuitem_playpause.set_image(Gtk.Image.new_from_icon_name("media-playback-start-symbolic", Gtk.IconSize.MENU))
+        menuitem_next = Gtk.ImageMenuItem(_("Next"))
+        menuitem_next.set_image(Gtk.Image.new_from_icon_name("media-skip-forward-symbolic", Gtk.IconSize.MENU))
+        menuitem_prev = Gtk.ImageMenuItem(_("Previous"))
+        menuitem_prev.set_image(Gtk.Image.new_from_icon_name("media-skip-backward-symbolic", Gtk.IconSize.MENU))
+        menuitem_quit = Gtk.ImageMenuItem(_("Close"))
+        menuitem_quit.set_image(Gtk.Image.new_from_icon_name("window-close-symbolic", Gtk.IconSize.MENU))
 
         menuitem_star = self.get_rating_menuitem()
         if menuitem_star:
@@ -223,6 +231,8 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         Sets icon and tooltip when playing status changes
         """
 
+        self.playing = playing
+
         if playing:
             self.icon.set_from_file(self.play_icon)
             current_entry = self.shell.props.shell_player.get_playing_entry()
@@ -249,6 +259,7 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         self.wind = self.shell.get_property("window")
         self.player = self.shell.props.shell_player
         self.db = self.shell.props.db
+        self.playing = False
 
         self.wind.connect("delete-event", self.hide_on_delete)
         self.create_popup_menu()
