@@ -183,7 +183,11 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         """
         Starts playing
         """
-        self.player.playpause() # does nothing argument
+        try:
+            self.player.playpause() # does nothing argument
+        except:
+            # Rhythmbox 3.3 support
+            self.player.playpause(True)
 
     def next(self, widget):
         """
