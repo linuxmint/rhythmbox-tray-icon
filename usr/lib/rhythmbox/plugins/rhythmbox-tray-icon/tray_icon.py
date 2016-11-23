@@ -236,20 +236,16 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         if playing:
             self.icon.set_from_file(self.play_icon)
             current_entry = self.shell.props.shell_player.get_playing_entry()
-            self.set_tooltip_text(current_entry.get_string(RB.RhythmDBPropType.ARTIST) + " - " + current_entry.get_string(RB.RhythmDBPropType.TITLE))
+            self.set_tooltip_text("%s\n%s" % (current_entry.get_string(RB.RhythmDBPropType.ARTIST), current_entry.get_string(RB.RhythmDBPropType.TITLE)))
         else:
             self.icon.set_from_file(self.rhythmbox_icon)
-            self.set_tooltip_text()
+            self.set_tooltip_text("Rhythmbox")
 
     def set_tooltip_text(self, message=""):
         """
         Sets tooltip to given message
         """
-        prepend = ""
-        if len(message) > 0:
-            prepend = "\r\n"
-        tooltip_text = message + prepend + "(Scroll = volume, click = visibility, middle click = next)"
-        self.icon.set_tooltip_text(tooltip_text)
+        self.icon.set_tooltip_text(message)
 
     def do_activate(self):
         """
@@ -271,7 +267,7 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         self.icon.connect("button-press-event", self.toggle_player_visibility)
         self.player.connect("playing-changed", self.on_playing_changed)
 
-        self.set_tooltip_text()
+        self.set_tooltip_text("Rhythmbox")
 
     def on_scroll(self, widget, event):
         """
