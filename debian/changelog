@@ -1,3 +1,10 @@
+rhythmbox-plugin-tray-icon (2016.11.23.2) serena; urgency=medium
+
+  * Distinguish between play and pause states and add menu icons
+  * Simplify tooltip
+
+ -- Clement Lefebvre <root@linuxmint.com>  Wed, 23 Nov 2016 23:32:29 +0000
+
 rhythmbox-plugin-tray-icon (2016.11.23.1) serena; urgency=medium
 
   * l10n: Localize menu items
