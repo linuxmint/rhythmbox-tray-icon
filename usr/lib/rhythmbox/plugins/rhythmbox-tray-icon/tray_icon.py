@@ -41,10 +41,10 @@ class TrayIcon(GObject.Object, Peas.Activatable):
 
         self.menu = Gtk.Menu()
 
-        menuitem_playpause = Gtk.MenuItem("Play/Pause")
-        menuitem_next = Gtk.MenuItem("Next")
-        menuitem_prev = Gtk.MenuItem("Prev")
-        menuitem_quit = Gtk.MenuItem("Quit")
+        menuitem_playpause = Gtk.MenuItem(_("Play/Pause"))
+        menuitem_next = Gtk.MenuItem(_("Next"))
+        menuitem_prev = Gtk.MenuItem(_("Previous"))
+        menuitem_quit = Gtk.MenuItem(_("Close"))
 
         menuitem_star = self.get_rating_menuitem()
         if menuitem_star:
