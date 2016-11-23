@@ -16,13 +16,20 @@ class TrayIcon(GObject.Object, Peas.Activatable):
     play_icon = os.path.join(sys.path[0], "tray_playing.png")
     menu = None
 
+    def position_menu_cb(self, m, x, y=None, i=None):
+            try:
+                return Gtk.StatusIcon.position_menu(self.menu, x, y, self.icon)
+            except (AttributeError, TypeError):
+                return Gtk.StatusIcon.position_menu(self.menu, self.icon)
+
     def show_popup_menu(self, icon, button, time, data = None):
         """
         Called when the icon is right clicked, displays the menu
         """
 
         self.create_popup_menu()
-        self.menu.popup(None, None, lambda w,x: self.icon.position_menu(self.menu, self.icon), self.icon, 3, time)
+        device = Gdk.Display.get_default().get_device_manager().get_client_pointer()
+        self.menu.popup_for_device(device, None, None, self.position_menu_cb, self.icon, 3, time)
 
     def create_popup_menu(self):
         """
