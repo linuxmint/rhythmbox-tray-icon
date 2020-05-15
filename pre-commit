@@ -1,3 +1,0 @@
-#Put this in .git/hooks or make it a symlink from .git/hooks
-zip rhythmbox-tray-icon.zip tray*.*
-git add rhythmbox-tray-icon.zip
