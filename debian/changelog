@@ -1,3 +1,12 @@
+rhythmbox-plugin-tray-icon (2020.05.21) ulyana; urgency=medium
+
+  * Fork project
+  * Update README
+  * Remove obsolete files
+  * Use an XAppStatusIcon
+
+ -- Clement Lefebvre <root@linuxmint.com>  Thu, 21 May 2020 12:56:58 +0100
+
 rhythmbox-plugin-tray-icon (2016.11.23.2) serena; urgency=medium
 
   * Distinguish between play and pause states and add menu icons
