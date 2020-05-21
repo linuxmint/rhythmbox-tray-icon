@@ -7,6 +7,6 @@ Standards-Version: 3.9.5
 
 Package: rhythmbox-plugin-tray-icon
 Architecture: all
-Depends: rhythmbox
+Depends: rhythmbox, gir1.2-xapp-1.0
 Description: A tray icon plugin for rhythmbox music player
  A tray icon plugin for rhythmbox music player.

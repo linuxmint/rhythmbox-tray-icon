@@ -1,35 +1,20 @@
 #!/usr/bin/python3
 # coding=utf-8
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, Peas, GObject, RB
+import gi
+gi.require_version('XApp', '1.0')
+
+from gi.repository import Gtk, Gdk, GdkPixbuf, Peas, GObject, RB, XApp
 import os
 import sys
 import math
-
 
 class TrayIcon(GObject.Object, Peas.Activatable):
 
     __gtype_name = 'TrayIcon'
     object = GObject.property(type=GObject.Object)
 
-    rhythmbox_icon = os.path.join(sys.path[0], "tray_stopped.png")
-    play_icon = os.path.join(sys.path[0], "tray_playing.png")
     menu = None
-
-    def position_menu_cb(self, m, x, y=None, i=None):
-            try:
-                return Gtk.StatusIcon.position_menu(self.menu, x, y, self.icon)
-            except (AttributeError, TypeError):
-                return Gtk.StatusIcon.position_menu(self.menu, self.icon)
-
-    def show_popup_menu(self, icon, button, time, data = None):
-        """
-        Called when the icon is right clicked, displays the menu
-        """
-
-        self.create_popup_menu()
-        device = Gdk.Display.get_default().get_device_manager().get_client_pointer()
-        self.menu.popup_for_device(device, None, None, self.position_menu_cb, self.icon, 3, time)
 
     def create_popup_menu(self):
         """
@@ -69,6 +54,7 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         self.menu.append(menuitem_quit)
 
         self.menu.show_all()
+        self.icon.set_secondary_menu(self.menu)
 
     def set_menu_css(self):
         """
@@ -181,17 +167,17 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         starString = '★' * filled_stars + '☆' * (total_stars-filled_stars)
         return "<span size='x-large' foreground='#000000'>" + starString + "</span>"
 
-    def toggle_player_visibility(self, icon, event, data = None):
+    def toggle_player_visibility(self, icon, button, time, data = None):
         """
         Toggles visibility of Rhythmbox player
         """
-        if event.button == 1: # left button
+        if button == 1: # left button
             if self.wind.get_visible():
                 self.wind.hide()
             else:
                 self.wind.show()
                 self.wind.present()
-        elif event.button == 2: # middle button
+        elif button == 2: # middle button
             self.player.do_next()
 
     def play(self, widget):
@@ -232,13 +218,12 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         """
 
         self.playing = playing
+        self.create_popup_menu()
 
         if playing:
-            self.icon.set_from_file(self.play_icon)
             current_entry = self.shell.props.shell_player.get_playing_entry()
             self.set_tooltip_text("%s\n%s" % (current_entry.get_string(RB.RhythmDBPropType.ARTIST), current_entry.get_string(RB.RhythmDBPropType.TITLE)))
         else:
-            self.icon.set_from_file(self.rhythmbox_icon)
             self.set_tooltip_text("Rhythmbox")
 
     def set_tooltip_text(self, message=""):
@@ -258,26 +243,25 @@ class TrayIcon(GObject.Object, Peas.Activatable):
         self.playing = False
 
         self.wind.connect("delete-event", self.hide_on_delete)
-        self.create_popup_menu()
 
-        self.icon =  Gtk.StatusIcon()
-        self.icon.set_from_file(self.rhythmbox_icon)
+        self.icon =  XApp.StatusIcon()
+        self.icon.set_icon_name("folder-music-symbolic")
         self.icon.connect("scroll-event", self.on_scroll)
-        self.icon.connect("popup-menu", self.show_popup_menu)
-        self.icon.connect("button-press-event", self.toggle_player_visibility)
+        self.icon.connect("activate", self.toggle_player_visibility)
         self.player.connect("playing-changed", self.on_playing_changed)
 
         self.set_tooltip_text("Rhythmbox")
+        self.create_popup_menu()
 
-    def on_scroll(self, widget, event):
+    def on_scroll(self, icon, amount, direction, time):
         """
         Lowers or raises Rhythmbox's volume
         """
         vol = round(self.player.get_volume()[1],1)
 
-        if event.direction == Gdk.ScrollDirection.UP:
+        if direction == XApp.ScrollDirection.UP:
             vol+=0.1
-        elif event.direction == Gdk.ScrollDirection.DOWN:
+        elif direction == XApp.ScrollDirection.DOWN:
             vol-=0.1
 
         if vol <= 0:
